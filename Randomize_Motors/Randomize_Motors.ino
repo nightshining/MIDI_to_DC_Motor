@@ -1,8 +1,4 @@
 /*
-This is a test sketch for the Adafruit assembled Motor Shield for Arduino v2
-It won't work with v1.x motor shields! Only for the v2's with built in PWM
-control
-
 For use with the Adafruit Motor Shield v2
 ---->	http://www.adafruit.com/products/1438
 */
@@ -22,10 +18,22 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_MotorShield AFMS_bottom(0x61); // Rightmost jumper closed
 Adafruit_MotorShield AFMS_top(0x60); // Default address, no jumpers
 
-Adafruit_DCMotor *myMotor1 = AFMS_bottom.getMotor(1);
-Adafruit_DCMotor *myMotor2 = AFMS_top.getMotor(4);
+//Adafruit_DCMotor *myMotor1 = AFMS_bottom.getMotor(1);
+//Adafruit_DCMotor *myMotor2 = AFMS_top.getMotor(4);
+
+
+
+Adafruit_DCMotor *myMotorsTop[4];
+Adafruit_DCMotor *myMotorsBottom[4];
+
 
 void setup() {
+  // Initialize the motors
+for(int i = 0; i < 4; i++) {
+  myMotorsTop[i] = AFMS_top.getMotor(i + 1);
+  myMotorsBottom[i] = AFMS_bottom.getMotor(i + 1);
+}
+
   Serial.begin(9600);           // set up Serial library at 9600 bps
   Serial.println("Adafruit Motorshield v2 - DC Motor test!");
 
@@ -44,39 +52,59 @@ void setup() {
   Serial.println("Motor Shield found.");
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor1->setSpeed(255);
-  myMotor2->setSpeed(255);
+  for(int i = 0; i < 4; i++) {
+  myMotorsTop[i]->setSpeed(255);
+  }
+ // myMotor2->setSpeed(255);
 
 }
 
 void loop() {
   uint8_t i;
 
-  Serial.print("tick");
+  Serial.println("tick");
 
-  myMotor2->run(FORWARD);
+ // myMotor2->run(FORWARD);
+ for(int i = 0; i < 4; i++) {
+ myMotorsTop[i]->run(FORWARD);
+ }
   for (i=0; i<255; i++) {
-    myMotor2->setSpeed(i);
+    for(int i = 0; i < 4; i++) {
+    myMotorsTop[i]->setSpeed(i);
+    }
     delay(10);
+    
   }
   for (i=255; i!=0; i--) {
-    myMotor2->setSpeed(i);
+    for(int i = 0; i < 4; i++) {
+    myMotorsTop[i]->setSpeed(i);
+    }
     delay(10);
   }
 
-  Serial.print("tock");
-
-  myMotor2->run(BACKWARD);
+  Serial.println("tock");
+  for(int i = 0; i < 4; i++) {
+    myMotorsTop[i]->run(BACKWARD);
+  }
   for (i=0; i<255; i++) {
-    myMotor2->setSpeed(i);
+    for(int i = 0; i < 4; i++) {
+    myMotorsTop[i]->setSpeed(i);
+    }
     delay(10);
+    
   }
   for (i=255; i!=0; i--) {
-    myMotor2->setSpeed(i);
+    for(int i = 0; i < 4; i++) {
+    myMotorsTop[i]->setSpeed(i);
+    }
     delay(10);
+    
+    
   }
 
-  Serial.print("tech");
-  myMotor2->run(RELEASE);
+  Serial.println("release");
+  for(int i = 0; i < 4; i++) {
+  myMotorsTop[i]->run(RELEASE);
+  }
   delay(1000);
 }
