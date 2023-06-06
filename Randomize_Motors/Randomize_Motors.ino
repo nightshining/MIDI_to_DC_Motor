@@ -30,8 +30,9 @@ Adafruit_DCMotor *myMotorsBottom[totalMotors];
 unsigned long startMillis;  //some global variables available anywhere in the program
 unsigned long currentMillis;
 const unsigned long period = 6000;  //th 1000ms
-int index_top = 0;
-int index_bot = 0;
+int index_pair = 0;
+int delay_time = 1000;
+
 
 
 void setup() {
@@ -61,81 +62,66 @@ void setup() {
   Serial.println("Motor Shield found.");
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
+  myMotorsTop[index_pair]->setSpeed(200);
+  myMotorsBottom[index_pair]->setSpeed(200);
   
-  myMotorsTop[index_top]->setSpeed(200);
-  
-  
- // myMotor2->setSpeed(255);
 }
 
 void loop() {
   uint8_t i;
 
-//randomize//
+  //randomize//
    currentMillis = millis();  //get the current "time" (actually the number of milliseconds since the program started)
   if (currentMillis - startMillis >= period)  //test whether the period has elapsed
   {
-    index_top = random(4);
-    myMotorsTop[index_top]->setSpeed(200);
-    Serial.println(index_top);
+    index_pair = random(4);
+    delay_time = random(500,1000);
+    //index_pair = 0;
+    // myMotorsTop[index_pair]->setSpeed(200);
+    // myMotorsBottom[index_pair]->setSpeed(200);
+    // Serial.println(index_pair);
     startMillis = currentMillis;  //IMPORTANT to save the start time of the current LED state.
   }
   //
 
-  
 
-  //Serial.print("tick");
-  myMotorsTop[index_top]->run(FORWARD);      // turn it on going forward
-  delay(100);
+  delay(delay_time);
 
-  //Serial.print("tock");
-  myMotorsTop[index_top]->run(BACKWARD);     // the other way
-  delay(100);
-  
-  //Serial.print("tack");
+  Serial.println("Top");
+  myMotorsTop[index_pair]->setSpeed(200);    
+  myMotorsTop[index_pair]->run(FORWARD);      // turn it on going forward
+  delay(delay_time);
+
+  Serial.println("STOP");
+  myMotorsTop[index_pair]->setSpeed(0);
+  myMotorsBottom[index_pair]->setSpeed(0);
+  myMotorsTop[index_pair]->run(RELEASE); 
+  myMotorsBottom[index_pair]->run(RELEASE); 
+  delay(delay_time);
+
+  Serial.println("Bottom");
+  myMotorsBottom[index_pair]->setSpeed(200);
+  myMotorsBottom[index_pair]->run(FORWARD);      // turn it on going forward
+  delay(delay_time);
+
+  Serial.println("STOP");
+  myMotorsTop[index_pair]->setSpeed(0);
+  myMotorsBottom[index_pair]->setSpeed(0);
+  myMotorsTop[index_pair]->run(RELEASE); 
+  myMotorsBottom[index_pair]->run(RELEASE); 
+  delay(delay_time);
+
+/*
+  Serial.println("Release");
   for(int i = 0; i < totalMotors; i++) {
   myMotorsTop[i]->run(RELEASE);      // stopped
+  myMotorsBottom[i]->run(RELEASE);      // stopped
   }
-  delay(100);
-
- // myMotor2->run(FORWARD);
-
-  //myMotorsTop[index_top]->run(FORWARD);
+  delay(2000);*/
+  //Serial.print("tock");
+  // myMotorsTop[index_top]->run(BACKWARD);     // the other way
+  // delay(100);
+  
  
 
-  // for (i=0; i<255; i++) {
-  
-  //   myMotorsTop[index_top]->setSpeed(i);
-  //   delay(5);
-  // }
-
-  // for (i=255; i!=0; i--) {
-  
-  //   myMotorsBottom[top_dc_index]->setSpeed(i);
-  //   delay(10);
-  // }
-
-  //   Serial.println("tock");
-  
-  //   myMotorsBottom[top_dc_index]->run(BACKWARD);
-  
-  //   for (i=0; i<255; i++) {
-  
-  //     myMotorsBottom[top_dc_index]->setSpeed(i);
-  //     delay(10);
-    
-  // }
-  // for (i=255; i!=0; i--) {
-  
-  //   myMotorsBottom[top_dc_index]->setSpeed(i);
-  //   delay(10);
-  // }
-
-  //Serial.println("release");
-  
-  //myMotorsBottom[top_dc_index]->run(RELEASE);
-  
-  //delay(1000);
-
-  
 }
