@@ -34,7 +34,7 @@ int index_pair = 2;
 int delay_time = 1000;
 
 //Solenoids//
-int solenoidPin = 8;    
+int solenoidPin = 7;    
 
 
 void setup() {
@@ -74,7 +74,7 @@ void setup() {
 }
 
 void loop() {
-  uint8_t i;
+ // uint8_t i;
 
   //randomize//
    currentMillis = millis();  //get the current "time" (actually the number of milliseconds since the program started)
@@ -106,8 +106,8 @@ void loop() {
   // delay(100);
 
   Serial.println("Bottom");
-  digitalWrite(solenoidPin, HIGH); //LOW bottom metal OPEN 
-  myMotorsBottom[index_pair]->setSpeed(255);
+  digitalWrite(solenoidPin, LOW); //LOW bottom metal OPEN 
+  myMotorsBottom[index_pair]->setSpeed(220);
   myMotorsBottom[index_pair]->run(FORWARD);   // turn it on going forward
   delay(delay_time);
 
