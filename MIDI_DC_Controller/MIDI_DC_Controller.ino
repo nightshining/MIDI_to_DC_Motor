@@ -1,3 +1,4 @@
+#include <Servo.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include <midi_serialization.h>
@@ -13,7 +14,7 @@ Adafruit_MotorShield AFMS_top(0x60); // Default address, no jumpers
 Adafruit_DCMotor *myMotor1 = AFMS_bottom.getMotor(1);
 Adafruit_DCMotor *myMotor2 = AFMS_top.getMotor(4);
 
-
+Servo servo1;
 
 void setup() {
 
@@ -28,6 +29,7 @@ void setup() {
   }
   Serial.println("Motor Shield found.");
   
+  servo1.attach(10);
   // Set the speed to start, from 0 (off) to 255 (max speed)
   myMotor1->setSpeed(100);
   myMotor1->run(FORWARD);
@@ -60,19 +62,27 @@ void loop() {
     }
 
 
-    // MIDI LOGIC //
+    // MIDI DC LOGIC //
     if(command == MIDI_NOTE_ON && velocity > 0 && key == 65) {
       digitalWrite(LED_BUILTIN, HIGH);
-     // myMotor1->run(FORWARD);
-      Serial.println("ON");
+      myMotor1->run(FORWARD);
+     // Serial.println("ON");
     }
 
     if(command == MIDI_NOTE_OFF || velocity == 0 || key == 0)  {
       digitalWrite(LED_BUILTIN, LOW);
-    //  myMotor1->run(RELEASE);
-      Serial.println("OFF");
+      myMotor1->run(RELEASE);
+      //Serial.println("OFF");
     }
-  
+      // MIDI SERVO LOGIC //
+    if(command == MIDI_NOTE_ON && velocity > 0 && key == 50) {
+      servo1.write(map(velocity, 0, 127, 0, 180));
+    }
+    if(command == MIDI_NOTE_OFF || velocity == 0 || key == 0)  {
+      servo1.write(map(velocity, 0, 127, 0, 180));
+      //Serial.println("OFF");
+    }
+      
 	}
 
 	// Flush the output.
